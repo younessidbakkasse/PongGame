@@ -1,2 +1,2 @@
-youness = 10
-print (youness)
+import pygame, sys
+print("pygame fucking works")
