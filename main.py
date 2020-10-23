@@ -2,27 +2,24 @@ import pygame, sys
 
 # init all pygame modules 
 pygame.init()
+clock = pygame.time.Clock()
 
 # game title and logo
-pygame.display.set_caption("Snaky")
+pygame.display.set_caption("Ping Pong")
 pygame.display.set_icon(pygame.image.load("./assets/favicon.png"))
 
 # screen dimensions
-screenWidthX = 250
-screenWidthY = 540
-orange = pygame.Color(255, 127, 80)
+screenWidthX = 700
+screenWidthY = 400
 
-# Player coords
-playerX = screenWidthX/2
-playerY = screenWidthY/2
-radius = 10
-playerSpeedX = 0
-playerSpeedY = -1
+# color palette
+backgroundColor = (30, 30, 30) # dark grey
+objectColor = (210, 210, 210) # light grey
 
-Clock = pygame.time.Clock()
-
-def player(x, y, r):
-    pygame.draw.circle(screen, orange, (int(x), int(y)), r)
+# game objects
+ball = pygame.Rect(screenWidthX/2 - 10, screenWidthY/2 - 10, 20, 20)
+player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 8, 80)
+opponent = pygame.Rect(8, screenWidthY/2 - 40, 8, 80)
 
 # the main game loop
 while True:
@@ -33,17 +30,15 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+            print("Game ended by user")
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                playerSpeedX = -1
-            elif event.key == pygame.K_RIGHT:
-                playerSpeedX = 1
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
-                playerSpeedX = 0
+    #drawing 
+    screen.fill(backgroundColor)
+    pygame.draw.rect(screen, objectColor, player)
+    pygame.draw.rect(screen, objectColor, opponent)
+    pygame.draw.ellipse(screen, objectColor, ball)
+    pygame.draw.aaline(screen, objectColor, (screenWidthX/2, 0), (screenWidthX/2, screenWidthY))
 
-    playerX += playerSpeedX
-    Clock.tick(60)
-    player(playerX, playerY, radius)
-    pygame.display.update()
+    # updating the display window
+    clock.tick(60)
+    pygame.display.flip()
