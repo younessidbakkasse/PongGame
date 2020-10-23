@@ -1,12 +1,12 @@
-import pygame, sys
+import pygame, sys, random
 
 # init all pygame modules 
 pygame.init()
 clock = pygame.time.Clock()
 
 # animations
-ballSpeedX = 1
-ballSpeedY = 2
+ballSpeedX = random.randint(2, 8)
+ballSpeedY = random.randint(1, 4)
 
 playerSpeed = 0
 opponentSpeed = 0
@@ -22,6 +22,8 @@ def ballAnimate():
     # display ball borders
     if ball.top <= 0 or ball.bottom >= screenWidthY:
         ballSpeedY *= -1
+    if ball.left <= 0 or ball.right >= screenWidthX:
+        resetBall()
 
     # ball collision with objects
     if ball.colliderect(player) or ball.colliderect(opponent):
@@ -41,7 +43,12 @@ def opponentAnimation():
     if opponent .bottom >= screenWidthY:
         opponent.bottom = screenWidthY
 
-
+def resetBall():
+        global ballSpeedX, ballSpeedY
+        ball.center = (screenWidthX/2, screenWidthY/2)
+        ballSpeedX *= random.choice((1, -1))
+        ballSpeedY *= random.choice((1, -1))
+    
 # game title and logo
 pygame.display.set_caption("Ping Pong")
 pygame.display.set_icon(pygame.image.load("./assets/favicon.png"))
