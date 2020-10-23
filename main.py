@@ -21,6 +21,10 @@ ball = pygame.Rect(screenWidthX/2 - 10, screenWidthY/2 - 10, 20, 20)
 player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 8, 80)
 opponent = pygame.Rect(8, screenWidthY/2 - 40, 8, 80)
 
+# animations
+ballSpeedX = 5
+ballSpeedY = 5
+
 # the main game loop
 while True:
     # maintain the game screen open
@@ -32,6 +36,17 @@ while True:
             pygame.quit()
             print("Game ended by user")
             sys.exit()
+
+    # moving the ball
+    ball.x += ballSpeedX
+    ball.y += ballSpeedY
+
+    # display ball borders
+    if ball.top <= 0 or ball.bottom >= screenWidthY:
+        ballSpeedY *= -1
+    if ball.left <= 0 or ball.right >= screenWidthX:
+        ballSpeedX *= -1 
+
     #drawing 
     screen.fill(backgroundColor)
     pygame.draw.rect(screen, objectColor, player)
