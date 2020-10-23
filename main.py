@@ -5,8 +5,11 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # animations
-ballSpeedX = 5
-ballSpeedY = 0
+ballSpeedX = 1
+ballSpeedY = 2
+
+playerSpeed = 0
+opponentSpeed = 0
 
 # ball function
 def ballAnimate():
@@ -19,12 +22,24 @@ def ballAnimate():
     # display ball borders
     if ball.top <= 0 or ball.bottom >= screenWidthY:
         ballSpeedY *= -1
-    if ball.left <= 0 or ball.right >= screenWidthX:
-        ballSpeedX *= -1 
 
     # ball collision with objects
     if ball.colliderect(player) or ball.colliderect(opponent):
         ballSpeedX *= -1
+
+def playerAnimation():
+    player.y += playerSpeed
+    if player.top <= 0: 
+        player.top = 0
+    if player.bottom >= screenWidthY:
+        player.bottom = screenWidthY
+
+def opponentAnimation():
+    opponent.y += opponentSpeed
+    if opponent.top <= 0: 
+        opponent.top = 0
+    if opponent .bottom >= screenWidthY:
+        opponent.bottom = screenWidthY
 
 
 # game title and logo
@@ -34,6 +49,7 @@ pygame.display.set_icon(pygame.image.load("./assets/favicon.png"))
 # screen dimensions
 screenWidthX = 700
 screenWidthY = 400
+screen = pygame.display.set_mode((screenWidthX, screenWidthY))
 
 # color palette
 backgroundColor = (30, 30, 30) # dark grey
@@ -46,17 +62,35 @@ opponent = pygame.Rect(8, screenWidthY/2 - 40, 8, 80)
 
 # the main game loop
 while True:
-    # maintain the game screen open
-    screen = pygame.display.set_mode((screenWidthX, screenWidthY))
-    
     # pygame display events 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            print("Game ended by user")
             sys.exit()
-    
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                playerSpeed += 5
+            if event.key == pygame.K_UP:
+                playerSpeed -= 5 
+            if event.key == pygame.K_a:
+                opponentSpeed += 5
+            if event.key == pygame.K_q:
+                opponentSpeed -= 5
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_DOWN:
+                playerSpeed -= 5
+            if event.key == pygame.K_UP:
+                playerSpeed += 5
+            if event.key == pygame.K_a:
+                opponentSpeed -= 5
+            if event.key == pygame.K_q:
+                opponentSpeed += 5
+        
+         
+
     ballAnimate()
+    playerAnimation()
+    opponentAnimation()
 
     #drawing 
     screen.fill(backgroundColor)
