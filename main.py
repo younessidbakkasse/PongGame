@@ -20,7 +20,7 @@ gameFont = pygame.font.Font("freesansbold.ttf", 25)
 
 # ball function
 def ballAnimate():
-    global ballSpeedX, ballSpeedY, opponentScore, playerScore
+    global ballSpeedX, ballSpeedY, scoreTime, opponentScore, playerScore
 
     # moving the ball
     ball.x += ballSpeedX
@@ -29,13 +29,14 @@ def ballAnimate():
     # display ball borders
     if ball.top <= 0 or ball.bottom >= screenWidthY:
         ballSpeedY *= -1
-    if ball.left <= 0:
-        resetBall()
-        playerScore += 1
-    elif ball.right >= screenWidthX:
-        resetBall()
-        opponentScore += 1
 
+    if ball.left <= 0:
+        scoreTime = pygame.time.get_ticks()
+        playerScore += 1
+
+    elif ball.right >= screenWidthX:
+        scoreTime = pygame.time.get_ticks()
+        opponentScore += 1
 
     # ball collision with objects
     if ball.colliderect(player) or ball.colliderect(opponent):
@@ -56,10 +57,16 @@ def opponentAnimation():
         opponent.bottom = screenWidthY
 
 def resetBall():
-        global ballSpeedX, ballSpeedY
-        ball.center = (screenWidthX/2, screenWidthY/2)
-        ballSpeedX *= random.choice((1, -1))
-        ballSpeedY *= random.choice((1, -1))
+        global ballSpeedX, ballSpeedY, currentTime, scoreTime
+
+        currentTime = pygame.time.get_ticks()
+
+        if currentTime - scoreTime < 1500:
+            ball.center = (screenWidthX/2, screenWidthY/2)
+        else:
+            ballSpeedX *= random.choice((1, -1))
+            ballSpeedY *= random.choice((1, -1))
+            scoreTime = None
     
 # game title and logo
 pygame.display.set_caption("Ping Pong")
@@ -78,6 +85,9 @@ objectColor = (210, 210, 210) # light grey
 ball = pygame.Rect(screenWidthX/2 - 10, screenWidthY/2 - 10, 20, 20)
 player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 8, 80)
 opponent = pygame.Rect(8, screenWidthY/2 - 40, 8, 80)
+
+# time
+scoreTime = None
 
 # the main game loop
 while True:
@@ -109,6 +119,9 @@ while True:
     playerAnimation()
     opponentAnimation()
 
+    if scoreTime:
+        resetBall()
+    
     #drawing 
     screen.fill(backgroundColor)
     pygame.draw.rect(screen, objectColor, player)
