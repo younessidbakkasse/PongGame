@@ -4,16 +4,23 @@ import pygame, sys, random
 pygame.init()
 clock = pygame.time.Clock()
 
-# animations
-ballSpeedX = random.randint(2, 8)
+# animations and speed
+ballSpeedX = random.randint(5, 8)
 ballSpeedY = random.randint(1, 4)
 
 playerSpeed = 0
 opponentSpeed = 0
 
+# score
+playerScore = 0
+opponentScore = 0
+
+# game font
+gameFont = pygame.font.Font("freesansbold.ttf", 25)
+
 # ball function
 def ballAnimate():
-    global ballSpeedX, ballSpeedY
+    global ballSpeedX, ballSpeedY, opponentScore, playerScore
 
     # moving the ball
     ball.x += ballSpeedX
@@ -22,8 +29,13 @@ def ballAnimate():
     # display ball borders
     if ball.top <= 0 or ball.bottom >= screenWidthY:
         ballSpeedY *= -1
-    if ball.left <= 0 or ball.right >= screenWidthX:
+    if ball.left <= 0:
         resetBall()
+        playerScore += 1
+    elif ball.right >= screenWidthX:
+        resetBall()
+        opponentScore += 1
+
 
     # ball collision with objects
     if ball.colliderect(player) or ball.colliderect(opponent):
@@ -92,9 +104,7 @@ while True:
                 opponentSpeed -= 5
             if event.key == pygame.K_q:
                 opponentSpeed += 5
-        
-         
-
+  
     ballAnimate()
     playerAnimation()
     opponentAnimation()
@@ -105,6 +115,12 @@ while True:
     pygame.draw.rect(screen, objectColor, opponent)
     pygame.draw.ellipse(screen, objectColor, ball)
     pygame.draw.aaline(screen, objectColor, (screenWidthX/2, 0), (screenWidthX/2, screenWidthY))
+
+    playerText = gameFont.render(f"{playerScore}", False, objectColor)
+    opponentText = gameFont.render(f"{opponentScore}", False, objectColor)
+    screen.blit(playerText, (screenWidthX/2 + 25, 10))
+    screen.blit(opponentText, (screenWidthX/2 - 45, 10))
+
 
     # updating the display window
     clock.tick(60)

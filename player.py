@@ -1,15 +1,9 @@
-class Player:
-    width = 0
-    def __init__(self, posX, posY):
-        self.posX = posX
-        self.posY = posY
-        
-    def getPosition(self):
-        print("the position of the snake is : " + "x = " + str(self.posX) + " and " + "y = " + str(self.posY))
+import re 
 
-    
-snakeOne = Player(14, 209)
-snakeTwo = Player(109, 10)
-
-snakeOne.getPosition()
-snakeTwo.getPosition()
+text = "iejfiefjfijfeifjei 737-882-1012 and 267-878-1883"
+numberFormat = re.compile(r"\d\d\d-\d\d\d-\d\d\d\d")
+res = numberFormat.search(text)
+if res == None:
+    print("The sample deosn't contain any numbers")
+else: 
+    print("the phone number is : " + res.group() + ".")
