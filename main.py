@@ -59,19 +59,15 @@ def opponentAnimation():
         opponent.bottom = screenWidthY
 
 def resetBall():
-        global ballSpeedX, ballSpeedY, currentTime, scoreTime
-
-        currentTime = pygame.time.get_ticks()
-
-        if currentTime - scoreTime < 1500:
-            ball.center = (screenWidthX/2, screenWidthY/2)
-        else:
-            ballSpeedX *= random.choice((1, -1))
-            ballSpeedY *= random.choice((1, -1))
-            scoreTime = None
+        global ballSpeedX, ballSpeedY
+        ball.center = (screenWidthX/2, screenWidthY/2)
+        ballSpeedX = random.randint(4, 8) * random.choice((1, -1))
+        ballSpeedY = random.randint(1, 3) * random.choice((1, -1))
     
 # game title and logo
 pygame.display.set_caption("Ping Pong")
+favicon = pygame.image.load("favicon.png")
+pygame.display.set_icon(favicon)
 
 # screen dimensions
 screenWidthX = 700
@@ -84,11 +80,8 @@ objectColor = (250, 250, 250) # light grey
 
 # game objects
 ball = pygame.Rect(screenWidthX/2 + 15, screenWidthY/2 + 15, 15, 15)
-player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 8, 80)
-opponent = pygame.Rect(8, screenWidthY/2 - 40, 8, 80)
-
-# time
-scoreTime = None
+player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 12, 80)
+opponent = pygame.Rect(8, screenWidthY/2 - 40, 12, 80)
 
 # the main game loop
 while True:
@@ -131,7 +124,6 @@ while True:
     opponentText = gameFont.render(f"{opponentScore}", False, objectColor)
     screen.blit(playerText, (screenWidthX/2 + 25, 10))
     screen.blit(opponentText, (screenWidthX/2 - 45, 10))
-
 
     # updating the display window
     clock.tick(60)
