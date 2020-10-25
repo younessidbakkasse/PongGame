@@ -59,11 +59,10 @@ def opponentAnimation():
         opponent.bottom = screenWidthY
 
 def resetBall():
-        global ballSpeedX, ballSpeedY
-        ball.center = (screenWidthX/2, screenWidthY/2)
-        ballSpeedX = random.randint(4, 8) * random.choice((1, -1))
-        ballSpeedY = random.randint(1, 3) * random.choice((1, -1))
-    
+    global ballSpeedX, ballSpeedY
+    ballSpeedX, ballSpeedY = 0, 0
+    ball.center = (screenWidthX/2, screenWidthY/2)
+
 # game title and logo
 pygame.display.set_caption("Ping Pong")
 favicon = pygame.image.load("favicon.png")
@@ -118,12 +117,18 @@ while True:
     pygame.draw.rect(screen, objectColor, player)
     pygame.draw.rect(screen, objectColor, opponent)
     pygame.draw.rect(screen, objectColor, ball)
-    pygame.draw.aaline(screen, objectColor, (screenWidthX/2, 0), (screenWidthX/2, screenWidthY))
+    pygame.draw.line(screen, objectColor, (screenWidthX/2, 0), (screenWidthX/2, screenWidthY), 5)
 
     playerText = gameFont.render(f"{playerScore}", False, objectColor)
     opponentText = gameFont.render(f"{opponentScore}", False, objectColor)
     screen.blit(playerText, (screenWidthX/2 + 25, 10))
-    screen.blit(opponentText, (screenWidthX/2 - 45, 10))
+    screen.blit(opponentText, (screenWidthX/2 - 35, 10))
+
+    #waiting to lunch the ball
+    if (playerSpeed != 0 or opponentSpeed != 0) and (ballSpeedX == 0 and ballSpeedY == 0):
+            pygame.time.delay(500)
+            ballSpeedX = random.randint(2, 5) * random.choice((1, -1))
+            ballSpeedY = random.randint(1, 4) * random.choice((1, -1))
 
     # updating the display window
     clock.tick(60)
