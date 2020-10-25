@@ -5,8 +5,8 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # animations and speed
-ballSpeedX = random.randint(5, 8)
-ballSpeedY = random.randint(1, 4)
+ballSpeedX = 5
+ballSpeedY = 2
 
 playerSpeed = 0
 opponentSpeed = 0
@@ -16,11 +16,12 @@ playerScore = 0
 opponentScore = 0
 
 # game font
-gameFont = pygame.font.Font("freesansbold.ttf", 25)
+gameFont = pygame.font.Font("freesansbold.ttf", 22)
+
 
 # ball function
 def ballAnimate():
-    global ballSpeedX, ballSpeedY, scoreTime, opponentScore, playerScore
+    global ballSpeedX, ballSpeedY, opponentScore, playerScore
 
     # moving the ball
     ball.x += ballSpeedX
@@ -31,16 +32,17 @@ def ballAnimate():
         ballSpeedY *= -1
 
     if ball.left <= 0:
-        scoreTime = pygame.time.get_ticks()
         playerScore += 1
+        resetBall()
 
     elif ball.right >= screenWidthX:
-        scoreTime = pygame.time.get_ticks()
         opponentScore += 1
+        resetBall()
 
     # ball collision with objects
     if ball.colliderect(player) or ball.colliderect(opponent):
         ballSpeedX *= -1
+        ballSpeedX *= 1.05
 
 def playerAnimation():
     player.y += playerSpeed
@@ -70,7 +72,6 @@ def resetBall():
     
 # game title and logo
 pygame.display.set_caption("Ping Pong")
-pygame.display.set_icon(pygame.image.load("./assets/favicon.png"))
 
 # screen dimensions
 screenWidthX = 700
@@ -78,11 +79,11 @@ screenWidthY = 400
 screen = pygame.display.set_mode((screenWidthX, screenWidthY))
 
 # color palette
-backgroundColor = (30, 30, 30) # dark grey
-objectColor = (210, 210, 210) # light grey
+backgroundColor = (0, 190, 105) # dark grey
+objectColor = (250, 250, 250) # light grey
 
 # game objects
-ball = pygame.Rect(screenWidthX/2 - 10, screenWidthY/2 - 10, 20, 20)
+ball = pygame.Rect(screenWidthX/2 + 15, screenWidthY/2 + 15, 15, 15)
 player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 8, 80)
 opponent = pygame.Rect(8, screenWidthY/2 - 40, 8, 80)
 
@@ -118,15 +119,12 @@ while True:
     ballAnimate()
     playerAnimation()
     opponentAnimation()
-
-    if scoreTime:
-        resetBall()
     
     #drawing 
     screen.fill(backgroundColor)
     pygame.draw.rect(screen, objectColor, player)
     pygame.draw.rect(screen, objectColor, opponent)
-    pygame.draw.ellipse(screen, objectColor, ball)
+    pygame.draw.rect(screen, objectColor, ball)
     pygame.draw.aaline(screen, objectColor, (screenWidthX/2, 0), (screenWidthX/2, screenWidthY))
 
     playerText = gameFont.render(f"{playerScore}", False, objectColor)
