@@ -77,7 +77,7 @@ def resetBall():
 
 # game title and logo
 pygame.display.set_caption("Ping Pong")
-favicon = pygame.image.load("favicon.png")
+favicon = pygame.image.load("./assets/favicon.png")
 pygame.display.set_icon(favicon)
 
 # screen dimensions
