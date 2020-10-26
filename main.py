@@ -4,9 +4,8 @@ import pygame, sys, random
 pygame.init()
 clock = pygame.time.Clock()
 
-# animations and speed
-ballSpeedX = 5
-ballSpeedY = 2
+def rand(min, max):
+    return random.randint(min, max) * random.choice((1, -1))
 
 playerSpeed = 0
 opponentSpeed = 0
@@ -18,6 +17,9 @@ opponentScore = 0
 # game font
 gameFont = pygame.font.Font("freesansbold.ttf", 22)
 
+# animations and speed
+ballSpeedX = rand(2, 5)
+ballSpeedY = rand(1, 3)
 
 # ball function
 def ballAnimate():
@@ -40,9 +42,19 @@ def ballAnimate():
         resetBall()
 
     # ball collision with objects
-    if ball.colliderect(player) or ball.colliderect(opponent):
-        ballSpeedX *= -1
-        ballSpeedX *= 1.05
+    if ball.colliderect(player) and ballSpeedX > 0:
+        ballSpeedX *= -1.05
+        if abs(ball.bottom - player.top) < 5 and ballSpeedY > 0:
+            ballSpeedY *= -1.05
+        elif abs(ball.top - player.bottom) < 5 and ballSpeedY < 0:
+            ballSpeedY *= -1.05
+
+    if ball.colliderect(opponent) and ballSpeedX < 0:
+        ballSpeedX *= -1.05
+        if abs(ball.bottom - opponent.top) < 5 and ballSpeedY > 0:
+            ballSpeedY *= -1.05
+        elif abs(ball.top - opponent.bottom) < 5 and ballSpeedY < 0:
+            ballSpeedY *= -1.05
 
 def playerAnimation():
     player.y += playerSpeed
@@ -78,8 +90,9 @@ backgroundColor = (0, 190, 105) # dark grey
 objectColor = (250, 250, 250) # light grey
 
 # game objects
-ball = pygame.Rect(screenWidthX/2 + 15, screenWidthY/2 + 15, 15, 15)
-player = pygame.Rect(screenWidthX - 16, screenWidthY/2 - 40, 12, 80)
+# the rect pos (x, y) is defined by top-left corner coords (x, y)
+ball = pygame.Rect(screenWidthX/2 - 7, screenWidthY/2 - 7, 14, 14)
+player = pygame.Rect(screenWidthX - 20, screenWidthY/2 - 40, 12, 80)
 opponent = pygame.Rect(8, screenWidthY/2 - 40, 12, 80)
 
 # the main game loop
@@ -126,9 +139,8 @@ while True:
 
     #waiting to lunch the ball
     if (playerSpeed != 0 or opponentSpeed != 0) and (ballSpeedX == 0 and ballSpeedY == 0):
-            pygame.time.delay(500)
-            ballSpeedX = random.randint(2, 5) * random.choice((1, -1))
-            ballSpeedY = random.randint(1, 4) * random.choice((1, -1))
+            ballSpeedX = rand(2, 5) 
+            ballSpeedY = rand(1, 4)
 
     # updating the display window
     clock.tick(60)
