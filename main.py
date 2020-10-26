@@ -6,7 +6,6 @@ clock = pygame.time.Clock()
 
 def rand(min, max):
     return random.randint(min, max) * random.choice((1, -1))
-
 playerSpeed = 0
 opponentSpeed = 0
 
@@ -86,8 +85,8 @@ screenWidthY = 400
 screen = pygame.display.set_mode((screenWidthX, screenWidthY))
 
 # color palette
-backgroundColor = (0, 190, 105) # dark grey
-objectColor = (250, 250, 250) # light grey
+backgroundColor = (0, 190, 105) 
+objectColor = (250, 250, 250) 
 
 # game objects
 # the rect pos (x, y) is defined by top-left corner coords (x, y)
