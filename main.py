@@ -2,12 +2,12 @@ from pygame import *
 from random import *
 from sys import exit
 
-class gameObject():
+class gameObject:
     def __init__(self, posX, posY, widthX, widthY):
         self.obj = Rect(posX, posY, widthX, widthY)
 
 class Player(gameObject):
-    def __init__(self, posX, posY, widthX, widthY, speedChange)
+    def __init__(self, posX, posY, widthX, widthY, speedChange):
         super().__init__(posX, posY, widthX, widthY)
         self.speed = 0
         self.speedChange = speedChange
@@ -39,31 +39,44 @@ class Ball(gameObject):
         if self.obj.x <= 0 or self.obj.x >= screenWidthX:
             reset()
 
-    def collisions(self):
-        if self.obj.colliderect(player) and self.speedX > 0:
-            self.speedX *= -1.05
+    #def collisions(self):
+     #   if self.obj.colliderect(player) and self.speedX > 0:
+     #       self.speedX *= -1.05
 
-        if self.obj.colliderect(player) and self.speedX < 0:
-            self.speedX *= -1.05
+      #  if self.obj.colliderect(player) and self.speedX < 0:
+       #     self.speedX *= -1.05
 
     def mouvement(self):
         self.obj.x += self.speedX
         self.obj.y += self.speedY
 
+class Game:
+    def run():
+
+
+
+# module init
+init()
+frameRates = time.Clock()
 
 # global variables
 screenWidthX = 700
 screenWidthY = 400
 
 # generals
-screen = display.set_mode((screenWidthX, screenWidthY))
+gameFrame = display.set_mode((screenWidthX, screenWidthY))
 display.set_caption('Pong')
 
 # color palette
 backgroundColor = (0, 190, 105) 
 objectColor = (250, 250, 250)
 
-# game loop
+# game objects
+playerOne = player()
+playerTwo = player()
+ball = Ball()
+
+# main game loop
 while True:
     for event in event.get():
         if event.type == QUIT:
@@ -87,3 +100,14 @@ while True:
                 playerTwo.speed -= playerTwo.speedChange
             if event.key == K_q:
                 playerTwo.speed += playerTwo.speedChange
+
+    # Background Stuff
+	gameFrame.fill(backgroundColor)
+	draw.line(gameFrame,)
+
+    # Game Running
+    game.run()
+
+    # update game screen
+    display.flip()
+    frameRates.tick(60)
