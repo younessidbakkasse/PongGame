@@ -39,20 +39,35 @@ class Ball(gameObject):
         if self.obj.x <= 0 or self.obj.x >= screenWidthX:
             reset()
 
-    #def collisions(self):
-     #   if self.obj.colliderect(player) and self.speedX > 0:
-     #       self.speedX *= -1.05
+    def collisions(self, playerOne, playerTwo):
+       if self.obj.colliderect(playerOne) and self.speedX > 0:
+            self.speedX *= -1.05
 
-      #  if self.obj.colliderect(player) and self.speedX < 0:
-       #     self.speedX *= -1.05
+        if self.obj.colliderect(playerTwo) and self.speedX < 0:
+            self.speedX *= -1.05
 
-    def mouvement(self):
+    def mouvement(self, playerOne, playerTwo):
         self.obj.x += self.speedX
         self.obj.y += self.speedY
+        constraints()
+        collisions(playerOne, playerTwo)
 
 class Game:
-    def run():
+    def __init__(self, playerOne, playerTwo, ball):
+        self.playerOne = playerOne
+        self.playerTwo = playerTwo
+        self.ball= ball
 
+    def drawObjects(self):
+        draw.rect(gameFrame, objectColor, self.playerOne)
+        draw.rect(gameFrame, objectColor, self.playerTwo)
+        draw.rect(gameFrame, objectColor, self.ball)
+
+    def run():
+        self.playerOne.mouvement()
+        self.playerTwo.mouvement()
+        self.ball.mouvement(self.playerOne, self.playerTwo)
+        drawObjects()
 
 
 # module init
@@ -75,6 +90,7 @@ objectColor = (250, 250, 250)
 playerOne = player()
 playerTwo = player()
 ball = Ball()
+game = Game()
 
 # main game loop
 while True:
