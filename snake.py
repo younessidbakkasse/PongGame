@@ -25,6 +25,7 @@ class Food:
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
         pygame.draw.rect(displaySurface, foodColor, foodRect)
 
+
 # Creating game objects
 food = Food()
 snake = Snake()
@@ -51,6 +52,7 @@ while True:
         if event.type == timeEvent:
             snake.move()
     
+    food.pos.x += 0.1
     food.draw()
     snake.draw()
     pygame.display.update()

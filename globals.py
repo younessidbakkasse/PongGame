@@ -9,6 +9,6 @@ backgroundColor = (84, 197, 74)
 
 # Global variables 
 # The display is a grid with 10px cell size
-cellWidth = 20
-displayWidth = 30 * cellWidth
-displayHeight = 20 * cellWidth
+cellWidth = 5
+displayWidth = 120 * cellWidth
+displayHeight = 80 * cellWidth
