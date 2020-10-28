@@ -51,8 +51,8 @@ while True:
         if event.type == timeEvent:
             snake.move()
     
-    food.pos.x += 0.1
     food.draw()
     snake.draw()
-    pygame.display.update()
+
+    pygame.display.flip()
     frameRates.tick(60)
