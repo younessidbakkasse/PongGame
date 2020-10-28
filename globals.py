@@ -5,8 +5,9 @@ from pygame.math import Vector2
 # Global variables 
 # The display is a grid with 10px cell size
 cellWidth = 20
-displayWidth = 30 * cellWidth
-displayHeight = 20 * cellWidth
+cellNumber = 20
+displayWidth = cellNumber * cellWidth
+displayHeight = cellNumber * cellWidth
 
 # Color Palette
 foodColor = (200, 63, 10)

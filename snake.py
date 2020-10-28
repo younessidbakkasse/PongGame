@@ -2,8 +2,9 @@ from globals import *
 
 class Snake:
     def __init__(self):
-        self.snakeBody = [Vector2(4, 10), Vector2(5, 10), Vector2(6, 10), Vector2(7, 10)]
+        self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
         self.direction = Vector2(1, 0)
+        self.newBodyPart = False
     
     def draw(self):
         for part in self.snakeBody:
@@ -11,31 +12,75 @@ class Snake:
             pygame.draw.rect(displaySurface, snakeColor, bodyRect) 
 
     def move(self):
-        newSnakeBody = self.snakeBody[:-1]
-        newSnakeBody.insert(0, self.snakeBody[0] + self.direction)
-        self.snakeBody = newSnakeBody[:]
+        if self.newBodyPart == True:
+            newSnakeBody = self.snakeBody[:]
+            newSnakeBody.insert(0, self.snakeBody[0] + self.direction)
+            self.snakeBody = newSnakeBody[:]
+            self.newBodyPart = False
+        else:
+            newSnakeBody = self.snakeBody[:-1]
+            newSnakeBody.insert(0, self.snakeBody[0] + self.direction)
+            self.snakeBody = newSnakeBody[:]
+
+    def isGrowing(self):
+        self.newBodyPart = True
 
 class Food:
     def __init__(self):
-        self.x = random.randint(0, 29)
-        self.y = random.randint(0, 19)
-        self.pos = pygame.Vector2(self.x, self.y)
-    
+        self.randomize()
+
     def draw(self):
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
         pygame.draw.rect(displaySurface, foodColor, foodRect)
 
-# Creating game objects
-food = Food()
-snake = Snake()
+    def randomize(self):
+        self.x = random.randint(0, cellNumber - 1)
+        self.y = random.randint(0, cellNumber - 1)
+        self.pos = pygame.Vector2(self.x, self.y)
+
+class Game:
+    def __init__(self):
+        self.snake = Snake()
+        self.food = Food()
+    
+    def isCollide(self):
+        if self.food.pos == self.snake.snakeBody[0]:
+            self.food.randomize()
+            self.snake.isGrowing()
+
+    def update(self):
+        self.snake.move()
+        self.isCollide()
+        self.isOutside()
+        self.isEatenSelf()
+
+    def draw(self):
+        displaySurface.fill(backgroundColor)
+        self.food.draw()
+        self.snake.draw()
+
+    def isOutside(self):
+        if not 0 <= self.snake.snakeBody[0].x < cellNumber or not 0 <= self.snake.snakeBody[0].y < cellNumber: 
+            self.gameOver()
+    
+    def isEatenSelf(self):
+        for part in self.snake.snakeBody[1:]:
+            if part == self.snake.snakeBody[0]:
+                self.gameOver()
+
+    def gameOver(self):
+        pygame.quit()
+        sys.exit()
+
 
 # Initialising pygame modules
 pygame.init()
 frameRates = pygame.time.Clock()
+game = Game()
+
 
 # Creating the display object
 displaySurface = pygame.display.set_mode((displayWidth, displayHeight))
-displaySurface.fill(backgroundColor)
 pygame.display.set_caption("Snake Game")
 
 # Time event
@@ -44,15 +89,24 @@ pygame.time.set_timer(timeEvent, 100)
 
 # Main game loop
 while True:
+    # Game control and user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == timeEvent:
-            snake.move()
+            game.update()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                game.snake.direction = Vector2(0, -1)
+            if event.key == pygame.K_DOWN:
+                game.snake.direction = Vector2(0, 1)
+            if event.key == pygame.K_RIGHT:
+                game.snake.direction = Vector2(1, 0)
+            if event.key == pygame.K_LEFT:
+                game.snake.direction = Vector2(-1, 0)  
     
-    food.draw()
-    snake.draw()
-
+    # Display updating the game
+    game.draw()
     pygame.display.flip()
     frameRates.tick(60)
