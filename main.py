@@ -23,7 +23,7 @@ class Player(gameObject):
         screenConstraints()
 
 class Ball(gameObject):
-    def __init__(self, posX, posY, widthX, widthY, speedX, speedY)
+    def __init__(self, posX, posY, widthX, widthY, speedX, speedY):
         super().__init__(posX, posY, widthX, widthY)
         self.speedX = speedX * choice((-1,1))
         self.speedY = speedY * choice((-1,1))
@@ -40,7 +40,7 @@ class Ball(gameObject):
             reset()
 
     def collisions(self, playerOne, playerTwo):
-       if self.obj.colliderect(playerOne) and self.speedX > 0:
+        if self.obj.colliderect(playerOne) and self.speedX > 0:
             self.speedX *= -1.05
 
         if self.obj.colliderect(playerTwo) and self.speedX < 0:
@@ -87,10 +87,10 @@ backgroundColor = (0, 190, 105)
 objectColor = (250, 250, 250)
 
 # game objects
-playerOne = player()
-playerTwo = player()
-ball = Ball()
-game = Game()
+playerOne = Player(screenWidthX - 15, screenWidthY/2 + 40, 10, 80, 5)
+playerTwo = Player(5, screenWidthY/2 + 40, 10, 80, 5)
+ball = Ball(screenWidthX/2 + 8, screenWidthX/2 + 8, 16, 16, 3, 1)
+game = Game(playerOne, playerTwo, ball)
 
 # main game loop
 while True:
@@ -117,12 +117,8 @@ while True:
             if event.key == K_q:
                 playerTwo.speed += playerTwo.speedChange
 
-    # Background Stuff
-	gameFrame.fill(backgroundColor)
-	draw.line(gameFrame,)
-
     # Game Running
-    game.run()
+    game.run(100)
 
     # update game screen
     display.flip()
