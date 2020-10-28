@@ -1,20 +1,19 @@
-import pygame, sys, random
-from pygame.math import Vector2
-
-# General variables who need a seperate file 
-# Colors 
-foodColor = (200, 63, 10)
-snakeColor = (19, 53, 250)
-backgroundColor = (84, 197, 74)
+from globals import *
 
 class Snake:
     def __init__(self):
-        self.body = [Vector2(4, 10), Vector2(5, 10), Vector2(6, 10), Vector2(7, 10)]
+        self.snakeBody = [Vector2(4, 10), Vector2(5, 10), Vector2(6, 10), Vector2(7, 10)]
+        self.direction = Vector2(1, 0)
     
     def draw(self):
-        for part in self.body:
+        for part in self.snakeBody:
             bodyRect = pygame.Rect(int(part.x * cellWidth), int(part.y * cellWidth), cellWidth, cellWidth)
             pygame.draw.rect(displaySurface, snakeColor, bodyRect) 
+
+    def move(self):
+        newSnakeBody = self.snakeBody[:-1]
+        newSnakeBody.insert(0, self.snakeBody[0] + self.direction)
+        self.snakeBody = newSnakeBody[:]
 
 class Food:
     def __init__(self):
@@ -26,6 +25,7 @@ class Food:
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
         pygame.draw.rect(displaySurface, foodColor, foodRect)
 
+# Creating game objects
 food = Food()
 snake = Snake()
 
@@ -33,16 +33,14 @@ snake = Snake()
 pygame.init()
 frameRates = pygame.time.Clock()
 
-# Global variables 
-# The display is a grid with 10px cell size
-cellWidth = 20
-displayWidth = 30 * cellWidth
-displayHeight = 20 * cellWidth
-
 # Creating the display object
 displaySurface = pygame.display.set_mode((displayWidth, displayHeight))
 displaySurface.fill(backgroundColor)
 pygame.display.set_caption("Snake Game")
+
+# Time event
+timeEvent = pygame.USEREVENT
+pygame.time.set_timer(timeEvent, 100)
 
 # Main game loop
 while True:
@@ -50,6 +48,8 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == timeEvent:
+            snake.move()
     
     food.draw()
     snake.draw()
