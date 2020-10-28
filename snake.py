@@ -25,7 +25,6 @@ class Food:
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
         pygame.draw.rect(displaySurface, foodColor, foodRect)
 
-
 # Creating game objects
 food = Food()
 snake = Snake()
