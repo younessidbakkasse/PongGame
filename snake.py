@@ -100,8 +100,6 @@ class Snake:
         self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
 
-
-
 class Food:
     def __init__(self):
         self.randomize()
