@@ -3,7 +3,7 @@ from globals import *
 class Snake:
     def __init__(self):
         self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
-        self.direction = Vector2(1, 0)
+        self.direction = Vector2(0, 0)
         self.newBodyPart = False
 
         # Head images
@@ -29,6 +29,9 @@ class Snake:
         # Body
         self.bodyHorizontal = pygame.image.load("./assets/bodyHorizontal.png")
         self.bodyVertical = pygame.image.load("./assets/bodyVertical.png")
+
+        # sound 
+        self.eatingSound = pygame.mixer.Sound("./sound/eatingSound.ogg")
     
     def draw(self):
         self.updateHead()
@@ -92,6 +95,12 @@ class Snake:
 
     def isGrowing(self):
         self.newBodyPart = True
+    
+    def reset(self):
+        self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
+        self.direction = Vector2(0, 0)
+
+
 
 class Food:
     def __init__(self):
@@ -116,6 +125,12 @@ class Game:
         if self.food.pos == self.snake.snakeBody[0]:
             self.food.randomize()
             self.snake.isGrowing()
+            self.snake.eatingSound.play()
+
+            # avoiding food overlap snake
+            for part in self.snake.snakeBody[1:]:
+                if part == self.food.pos:
+                    self.food.randomize()
 
     def update(self):
         self.snake.move()
@@ -139,8 +154,7 @@ class Game:
                 self.gameOver()
 
     def gameOver(self):
-        pygame.quit()
-        sys.exit()
+        self.snake.reset()
     
     def score(self):
         score = str(len(self.snake.snakeBody) - 3)

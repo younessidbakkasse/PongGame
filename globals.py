@@ -3,6 +3,7 @@ import pygame, sys, random
 from pygame.math import Vector2
 
 # Initialising pygame modules
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 frameRates = pygame.time.Clock()
 
