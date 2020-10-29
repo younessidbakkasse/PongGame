@@ -127,6 +127,7 @@ class Game:
         self.drawBackgroundPattern()
         self.food.draw()
         self.snake.draw()
+        self.score()
 
     def isOutside(self):
         if not 0 <= self.snake.snakeBody[0].x < cellNumber or not 0 <= self.snake.snakeBody[0].y < cellNumber: 
@@ -140,6 +141,11 @@ class Game:
     def gameOver(self):
         pygame.quit()
         sys.exit()
+    
+    def score(self):
+        score = str(len(self.snake.snakeBody) - 3)
+        scoreSurface = mainFont.render(score, True, (50, 50, 50))
+        displaySurface.blit(scoreSurface, (cellWidth/4, cellWidth/4 - 5))
 
     def drawBackgroundPattern(self):
         displaySurface.fill(darkBackgroundColor)
@@ -155,14 +161,7 @@ class Game:
                         lightGrassBlock = pygame.Rect(col * cellWidth, row * cellWidth, cellWidth, cellWidth)
                         pygame.draw.rect(displaySurface, lightBackgroundColor, lightGrassBlock)
 
-
-
-# Initialising pygame modules
-pygame.init()
-frameRates = pygame.time.Clock()
 game = Game()
-
-
 
 # Creating the display object
 displaySurface = pygame.display.set_mode((displayWidth, displayHeight))
