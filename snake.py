@@ -7,12 +7,14 @@ class Snake:
         self.newBodyPart = False
 
         # Head images
+        self.head = None
         self.headUp = pygame.image.load("./assets/headUp.png")
         self.headDown = pygame.image.load("./assets/headDown.png")
         self.headRight = pygame.image.load("./assets/headRight.png")
         self.headLeft = pygame.image.load("./assets/headLeft.png")
 
         # Tail images
+        self.tail = None
         self.tailUp = pygame.image.load("./assets/tailUp.png")
         self.tailDown = pygame.image.load("./assets/tailDown.png")
         self.tailRight = pygame.image.load("./assets/tailRight.png")
@@ -29,11 +31,39 @@ class Snake:
         self.bodyVertical = pygame.image.load("./assets/bodyVertical.png")
     
     def draw(self):
-        for part in self.snakeBody:
+        self.updateHead()
+        self.updateTail()
+        for index, part in enumerate(self.snakeBody):
             bodyRect = pygame.Rect(int(part.x * cellWidth), int(part.y * cellWidth), cellWidth, cellWidth)
-            pygame.draw.rect(displaySurface, snakeColor, bodyRect) 
 
+            if index == 0:
+                displaySurface.blit(self.head, bodyRect)
+            elif index == (len(self.snakeBody) - 1):
+                displaySurface.blit(self.tail, bodyRect)
+            else:
+                pygame.draw.rect(displaySurface, snakeColor, bodyRect)    
 
+    def updateHead(self):
+        headToBody = self.snakeBody[1] - self.snakeBody[0] 
+        if headToBody == Vector2(1, 0):
+            self.head = self.headLeft
+        elif headToBody == Vector2(-1, 0):
+            self.head = self.headRight
+        elif headToBody == Vector2(0, 1):
+            self.head = self.headUp
+        elif headToBody == Vector2(0, -1):
+            self.head = self.headDown
+
+    def updateTail(self):
+        tailToBody = self.snakeBody[len(self.snakeBody) - 2] - self.snakeBody[len(self.snakeBody) - 1]
+        if tailToBody == Vector2(1, 0):
+            self.tail = self.tailLeft
+        elif tailToBody == Vector2(-1, 0):
+            self.tail = self.tailRight
+        elif tailToBody == Vector2(0, 1):
+            self.tail = self.tailUp
+        elif tailToBody == Vector2(0, -1):
+            self.tail = self.tailDown
 
     def move(self):
         if self.newBodyPart == True:
