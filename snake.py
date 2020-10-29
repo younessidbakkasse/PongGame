@@ -126,7 +126,7 @@ class Game:
             self.snake.eatingSound.play()
 
             # avoiding food overlap snake
-            for part in self.snake.snakeBody[1:]:
+            for part in self.snake.snakeBody[:]:
                 if part == self.food.pos:
                     self.food.randomize()
 
