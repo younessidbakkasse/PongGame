@@ -41,7 +41,21 @@ class Snake:
             elif index == (len(self.snakeBody) - 1):
                 displaySurface.blit(self.tail, bodyRect)
             else:
-                pygame.draw.rect(displaySurface, snakeColor, bodyRect)    
+                previousPart = self.snakeBody[index + 1] - part
+                nextPart = self.snakeBody[index - 1] - part
+                if previousPart.x == nextPart.x:
+                    displaySurface.blit(self.bodyVertical, bodyRect)
+                elif previousPart.y == nextPart.y:
+                    displaySurface.blit(self.bodyHorizontal, bodyRect)
+                else:
+                    if previousPart.x == -1 and nextPart.y == -1 or previousPart.y == -1 and nextPart.x == -1:
+                        displaySurface.blit(self.downLeft, bodyRect)
+                    elif previousPart.x == 1 and nextPart.y == 1 or previousPart.y == 1 and nextPart.x == 1:
+                        displaySurface.blit(self.upRight, bodyRect)
+                    elif previousPart.x == 1 and nextPart.y == -1 or previousPart.y == -1 and nextPart.x == 1:
+                        displaySurface.blit(self.downRight, bodyRect)
+                    elif previousPart.x == -1 and nextPart.y == 1 or previousPart.y == 1 and nextPart.x == -1:
+                        displaySurface.blit(self.upLeft, bodyRect)
 
     def updateHead(self):
         headToBody = self.snakeBody[1] - self.snakeBody[0] 
@@ -110,7 +124,7 @@ class Game:
         self.isEatenSelf()
 
     def draw(self):
-        displaySurface.fill(backgroundColor)
+        self.drawBackgroundPattern()
         self.food.draw()
         self.snake.draw()
 
@@ -126,6 +140,21 @@ class Game:
     def gameOver(self):
         pygame.quit()
         sys.exit()
+
+    def drawBackgroundPattern(self):
+        displaySurface.fill(darkBackgroundColor)
+        for row in range(cellNumber):
+            if row % 2 == 0:
+                for col in range(cellNumber):
+                    if col % 2 == 0:
+                        lightGrassBlock = pygame.Rect(col * cellWidth, row * cellWidth, cellWidth, cellWidth)
+                        pygame.draw.rect(displaySurface, lightBackgroundColor, lightGrassBlock)
+            if row % 2 != 0:
+                for col in range(cellNumber):
+                    if col % 2 != 0:
+                        lightGrassBlock = pygame.Rect(col * cellWidth, row * cellWidth, cellWidth, cellWidth)
+                        pygame.draw.rect(displaySurface, lightBackgroundColor, lightGrassBlock)
+
 
 
 # Initialising pygame modules

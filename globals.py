@@ -12,6 +12,7 @@ displayHeight = cellNumber * cellWidth
 # Color Palette
 foodColor = (200, 63, 10)
 snakeColor = (19, 53, 250)
-backgroundColor = (84, 197, 74)
+lightBackgroundColor = pygame.Color("#B9F7CB")
+darkBackgroundColor = pygame.Color("#68F1AF")
 
 # Uploading assets
