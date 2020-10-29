@@ -5,11 +5,35 @@ class Snake:
         self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
         self.direction = Vector2(1, 0)
         self.newBodyPart = False
+
+        # Head images
+        self.headUp = pygame.image.load("./assets/headUp.png")
+        self.headDown = pygame.image.load("./assets/headDown.png")
+        self.headRight = pygame.image.load("./assets/headRight.png")
+        self.headLeft = pygame.image.load("./assets/headLeft.png")
+
+        # Tail images
+        self.tailUp = pygame.image.load("./assets/tailUp.png")
+        self.tailDown = pygame.image.load("./assets/tailDown.png")
+        self.tailRight = pygame.image.load("./assets/tailRight.png")
+        self.tailLeft = pygame.image.load("./assets/tailLeft.png")
+
+        # Turning body images
+        self.upRight = pygame.image.load("./assets/upRight.png")
+        self.upLeft = pygame.image.load("./assets/upLeft.png")
+        self.downRight = pygame.image.load("./assets/downRight.png")
+        self.downLeft = pygame.image.load("./assets/downLeft.png")
+
+        # Body
+        self.bodyHorizontal = pygame.image.load("./assets/bodyHorizontal.png")
+        self.bodyVertical = pygame.image.load("./assets/bodyVertical.png")
     
     def draw(self):
         for part in self.snakeBody:
             bodyRect = pygame.Rect(int(part.x * cellWidth), int(part.y * cellWidth), cellWidth, cellWidth)
             pygame.draw.rect(displaySurface, snakeColor, bodyRect) 
+
+
 
     def move(self):
         if self.newBodyPart == True:
@@ -28,10 +52,11 @@ class Snake:
 class Food:
     def __init__(self):
         self.randomize()
+        self.apple = pygame.image.load("./assets/apple.png")
 
     def draw(self):
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
-        pygame.draw.rect(displaySurface, foodColor, foodRect)
+        displaySurface.blit(self.apple, foodRect)
 
     def randomize(self):
         self.x = random.randint(0, cellNumber - 1)
@@ -77,6 +102,7 @@ class Game:
 pygame.init()
 frameRates = pygame.time.Clock()
 game = Game()
+
 
 
 # Creating the display object
