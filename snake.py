@@ -12,7 +12,7 @@ class Snake:
         self.headDown = pygame.image.load("./assets/headDown.png")
         self.headRight = pygame.image.load("./assets/headRight.png")
         self.headLeft = pygame.image.load("./assets/headLeft.png")
-
+        
         # Tail images
         self.tail = None
         self.tailUp = pygame.image.load("./assets/tailUp.png")
@@ -157,7 +157,7 @@ class Game:
     def score(self):
         score = str(len(self.snake.snakeBody) - 3)
         scoreSurface = mainFont.render(score, True, (50, 50, 50))
-        displaySurface.blit(scoreSurface, (cellWidth/4, cellWidth/4 - 5))
+        displaySurface.blit(scoreSurface, (int(cellWidth/4), int(cellWidth/4 - 5)))
 
     def drawBackgroundPattern(self):
         displaySurface.fill(darkBackgroundColor)
@@ -181,7 +181,7 @@ pygame.display.set_caption("Snake Game")
 
 # Time event
 timeEvent = pygame.USEREVENT
-pygame.time.set_timer(timeEvent, 100)
+pygame.time.set_timer(timeEvent, 150)
 
 # Main game loop
 while True:
@@ -195,7 +195,7 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 if game.snake.direction.y != 1:
-                    game.snake.direction = Vector2(0, -1)
+                    game.snake.direction = Vector2(0, -1) 
             if event.key == pygame.K_DOWN:
                 if game.snake.direction.y != -1:
                     game.snake.direction = Vector2(0, 1)
