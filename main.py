@@ -1,4 +1,6 @@
-from globals import *
+# Modules 
+import pygame, sys, random
+from pygame.math import Vector2
 
 class Snake:
     def __init__(self):
@@ -8,7 +10,7 @@ class Snake:
     
     def draw(self):
         bodyRect = pygame.Rect(int(part.x * cellWidth), int(part.y * cellWidth), cellWidth, cellWidth)
-        pygame.draw.rect(displaySurface, (255, 255, 255), bodyRect)
+        pygame.draw.rect(displaySurface, objectColor, bodyRect)
 
     def move(self):
         if self.newBodyPart == True:
@@ -34,7 +36,7 @@ class Food:
 
     def draw(self):
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
-        pygame.draw.rect(displaySurface, (255, 255, 255), foodRect)
+        pygame.draw.rect(displaySurface, objectColor, foodRect)
 
     def randomize(self):
         self.x = random.randint(0, cellNumber - 1)
@@ -87,9 +89,26 @@ class Game:
         displaySurface.blit(scoreSurface, (int(cellWidth/4), int(cellWidth/4 - 5)))
 
     def drawBackground(self):
-        displaySurface.fill(BackgroundColor)
+        displaySurface.fill(backgroundColor)
 
-game = Game()
+# Initialising pygame modules
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.init()
+frameRates = pygame.time.Clock()
+
+# Global variables 
+# The display is a grid with 10px cell size
+cellWidth = 30
+cellNumber = 15
+displayWidth = cellNumber * cellWidth
+displayHeight = cellNumber * cellWidth
+
+# Color Palette
+objectColor = (250, 250, 250)
+backgroundColor = (0, 0, 0)
+
+# Game font
+mainFont = pygame.font.Font("./assets/PoetsenOne.ttf", 20)
 
 # Creating the display object
 displaySurface = pygame.display.set_mode((displayWidth, displayHeight))
@@ -97,7 +116,10 @@ pygame.display.set_caption("Snake Game")
 
 # Time event
 timeEvent = pygame.USEREVENT
-pygame.time.set_timer(timeEvent, 150)
+pygame.time.set_timer(timeEvent, 100)
+
+# Declaring game
+game = Game()
 
 # Main game loop
 while True:
