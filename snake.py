@@ -1,86 +1,17 @@
-from globals import *
+# Modules 
+import pygame, sys, random
+from pygame.math import Vector2
 
 class Snake:
     def __init__(self):
         self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
         self.newBodyPart = False
-
-        # Head images
-        self.head = None
-        self.headUp = pygame.image.load("./assets/headUp.png")
-        self.headDown = pygame.image.load("./assets/headDown.png")
-        self.headRight = pygame.image.load("./assets/headRight.png")
-        self.headLeft = pygame.image.load("./assets/headLeft.png")
-        
-        # Tail images
-        self.tail = None
-        self.tailUp = pygame.image.load("./assets/tailUp.png")
-        self.tailDown = pygame.image.load("./assets/tailDown.png")
-        self.tailRight = pygame.image.load("./assets/tailRight.png")
-        self.tailLeft = pygame.image.load("./assets/tailLeft.png")
-
-        # Turning body images
-        self.upRight = pygame.image.load("./assets/upRight.png")
-        self.upLeft = pygame.image.load("./assets/upLeft.png")
-        self.downRight = pygame.image.load("./assets/downRight.png")
-        self.downLeft = pygame.image.load("./assets/downLeft.png")
-
-        # Body
-        self.bodyHorizontal = pygame.image.load("./assets/bodyHorizontal.png")
-        self.bodyVertical = pygame.image.load("./assets/bodyVertical.png")
-
-        # sound 
-        self.eatingSound = pygame.mixer.Sound("./sound/eatingSound.ogg")
     
     def draw(self):
-        self.updateHead()
-        self.updateTail()
-        for index, part in enumerate(self.snakeBody):
+        for part in self.snakeBody:
             bodyRect = pygame.Rect(int(part.x * cellWidth), int(part.y * cellWidth), cellWidth, cellWidth)
-
-            if index == 0:
-                displaySurface.blit(self.head, bodyRect)
-            elif index == (len(self.snakeBody) - 1):
-                displaySurface.blit(self.tail, bodyRect)
-            else:
-                previousPart = self.snakeBody[index + 1] - part
-                nextPart = self.snakeBody[index - 1] - part
-                if previousPart.x == nextPart.x:
-                    displaySurface.blit(self.bodyVertical, bodyRect)
-                elif previousPart.y == nextPart.y:
-                    displaySurface.blit(self.bodyHorizontal, bodyRect)
-                else:
-                    if previousPart.x == -1 and nextPart.y == -1 or previousPart.y == -1 and nextPart.x == -1:
-                        displaySurface.blit(self.downLeft, bodyRect)
-                    elif previousPart.x == 1 and nextPart.y == 1 or previousPart.y == 1 and nextPart.x == 1:
-                        displaySurface.blit(self.upRight, bodyRect)
-                    elif previousPart.x == 1 and nextPart.y == -1 or previousPart.y == -1 and nextPart.x == 1:
-                        displaySurface.blit(self.downRight, bodyRect)
-                    elif previousPart.x == -1 and nextPart.y == 1 or previousPart.y == 1 and nextPart.x == -1:
-                        displaySurface.blit(self.upLeft, bodyRect)
-
-    def updateHead(self):
-        headToBody = self.snakeBody[1] - self.snakeBody[0] 
-        if headToBody == Vector2(1, 0):
-            self.head = self.headLeft
-        elif headToBody == Vector2(-1, 0):
-            self.head = self.headRight
-        elif headToBody == Vector2(0, 1):
-            self.head = self.headUp
-        elif headToBody == Vector2(0, -1):
-            self.head = self.headDown
-
-    def updateTail(self):
-        tailToBody = self.snakeBody[len(self.snakeBody) - 2] - self.snakeBody[len(self.snakeBody) - 1]
-        if tailToBody == Vector2(1, 0):
-            self.tail = self.tailLeft
-        elif tailToBody == Vector2(-1, 0):
-            self.tail = self.tailRight
-        elif tailToBody == Vector2(0, 1):
-            self.tail = self.tailUp
-        elif tailToBody == Vector2(0, -1):
-            self.tail = self.tailDown
+            pygame.draw.rect(displaySurface, objectColor, bodyRect)
 
     def move(self):
         if self.newBodyPart == True:
@@ -103,11 +34,10 @@ class Snake:
 class Food:
     def __init__(self):
         self.randomize()
-        self.apple = pygame.image.load("./assets/apple.png")
 
     def draw(self):
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
-        displaySurface.blit(self.apple, foodRect)
+        pygame.draw.rect(displaySurface, foodColor, foodRect)
 
     def randomize(self):
         self.x = random.randint(0, cellNumber - 1)
@@ -123,11 +53,9 @@ class Game:
         if self.food.pos == self.snake.snakeBody[0]:
             self.food.randomize()
             self.snake.isGrowing()
-            self.snake.eatingSound.play()
-
             # avoiding food overlap snake
-            for part in self.snake.snakeBody[:]:
-                if part == self.food.pos:
+            for part in self.snake.snakeBody[1:]:
+                while part == self.food.pos:
                     self.food.randomize()
 
     def update(self):
@@ -137,7 +65,7 @@ class Game:
         self.isEatenSelf()
 
     def draw(self):
-        self.drawBackgroundPattern()
+        self.drawBackground()
         self.food.draw()
         self.snake.draw()
         self.score()
@@ -156,24 +84,31 @@ class Game:
     
     def score(self):
         score = str(len(self.snake.snakeBody) - 3)
-        scoreSurface = mainFont.render(score, True, (50, 50, 50))
-        displaySurface.blit(scoreSurface, (int(cellWidth/4), int(cellWidth/4 - 5)))
+        scoreSurface = mainFont.render(score, False, objectColor)
+        scoreSurfaceRect = scoreSurface.get_rect(center = (int(cellWidth/2), int(cellWidth/2)))
+        displaySurface.blit(scoreSurface, scoreSurfaceRect)
 
-    def drawBackgroundPattern(self):
-        displaySurface.fill(darkBackgroundColor)
-        for row in range(cellNumber):
-            if row % 2 == 0:
-                for col in range(cellNumber):
-                    if col % 2 == 0:
-                        lightGrassBlock = pygame.Rect(col * cellWidth, row * cellWidth, cellWidth, cellWidth)
-                        pygame.draw.rect(displaySurface, lightBackgroundColor, lightGrassBlock)
-            if row % 2 != 0:
-                for col in range(cellNumber):
-                    if col % 2 != 0:
-                        lightGrassBlock = pygame.Rect(col * cellWidth, row * cellWidth, cellWidth, cellWidth)
-                        pygame.draw.rect(displaySurface, lightBackgroundColor, lightGrassBlock)
+    def drawBackground(self):
+        displaySurface.fill(backgroundColor)
 
-game = Game()
+# Initialising pygame modules
+pygame.init()
+frameRates = pygame.time.Clock()
+
+# Global variables 
+# The display is a grid with 10px cell size
+cellWidth = 20
+cellNumber = 30
+displayWidth = cellNumber * cellWidth
+displayHeight = cellNumber * cellWidth
+
+# Color Palette
+objectColor = (245, 245, 245)
+backgroundColor = (0, 190, 105)
+foodColor = (200, 30, 30)
+
+# Game font
+mainFont = pygame.font.Font("./assets/MinecraftTen-VGORe.ttf", 21)
 
 # Creating the display object
 displaySurface = pygame.display.set_mode((displayWidth, displayHeight))
@@ -181,7 +116,10 @@ pygame.display.set_caption("Snake Game")
 
 # Time event
 timeEvent = pygame.USEREVENT
-pygame.time.set_timer(timeEvent, 150)
+pygame.time.set_timer(timeEvent, 100)
+
+# Declaring game
+game = Game()
 
 # Main game loop
 while True:
