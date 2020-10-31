@@ -37,7 +37,7 @@ class Food:
 
     def draw(self):
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
-        pygame.draw.rect(displaySurface, objectColor, foodRect)
+        pygame.draw.rect(displaySurface, foodColor, foodRect)
 
     def randomize(self):
         self.x = random.randint(0, cellNumber - 1)
@@ -85,7 +85,7 @@ class Game:
     def score(self):
         score = str(len(self.snake.snakeBody) - 3)
         scoreSurface = mainFont.render(score, False, objectColor)
-        scoreSurfaceRect = scoreSurface.get_rect(center = (cellWidth/2, cellWidth/2))
+        scoreSurfaceRect = scoreSurface.get_rect(center = (int(cellWidth/2), int(cellWidth/2)))
         displaySurface.blit(scoreSurface, scoreSurfaceRect)
 
     def drawBackground(self):
@@ -98,13 +98,14 @@ frameRates = pygame.time.Clock()
 # Global variables 
 # The display is a grid with 10px cell size
 cellWidth = 20
-cellNumber = 20
+cellNumber = 30
 displayWidth = cellNumber * cellWidth
 displayHeight = cellNumber * cellWidth
 
 # Color Palette
-objectColor = (250, 250, 250)
-backgroundColor = (0, 0, 0)
+objectColor = (245, 245, 245)
+backgroundColor = (5, 5, 5)
+foodColor = (200, 30, 30)
 
 # Game font
 mainFont = pygame.font.Font("./assets/MinecraftTen-VGORe.ttf", 20)
