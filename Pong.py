@@ -1,145 +1,140 @@
 import pygame, sys, random
+from main import * 
 
-# init all pygame modules 
-pygame.init()
-clock = pygame.time.Clock()
+class Player:
+    def __init__(self, posX, speed, score):
+        self.rect = pygame.Rect(int(posX), int(displayHeight/2 - 40), 14, 80)
+        self.speed = speed
+        self.score = score
 
-def rand(min, max):
-    return random.randint(min, max) * random.choice((1, -1))
+    def collisions(self):
+        self.mouvement()
+        if self.rect.top <= 0: 
+            self.rect.top = 0
+        if self.rect.bottom >= displayHeight:
+            self.rect.bottom = displayHeight
 
-playerSpeed = 0
-opponentSpeed = 0
+    def mouvement(self):
+        self.rect.y += self.speed
 
-# score
-playerScore = 0
-opponentScore = 0
+    def draw(self):
+        pygame.draw.rect(display, objectColor, self.rect)
 
-# game font
-gameFont = pygame.font.Font("./assets/MinecraftTen-VGORe.ttf", 25)
+class Ball:
+    def __init__(self, speedX, speedY):
+        self.rect = pygame.Rect(int(displayWidth/2 - 8), int(displayHeight/2 - 8), 16, 16)
+        self.speedX = speedX
+        self.speedY = speedY
 
-# animations and speed
-ballSpeedX = rand(3, 6)
-ballSpeedY = rand(2, 4)
+    def reset(self):
+        self.speedX, self.speedY = 0, 0
+        self.rect.center = (int(displayWidth/2), int(displayHeight/2))
 
-# ball function
-def ballAnimate():
-    global ballSpeedX, ballSpeedY, opponentScore, playerScore
+    def draw(self):
+        pygame.draw.rect(display, objectColor, self.rect)
 
-    # moving the ball
-    ball.x += ballSpeedX
-    ball.y += ballSpeedY
+    def mouvement(self):
+        self.rect.x += self.speedX
+        self.rect.y += self.speedY
 
-    # display ball borders
-    if ball.top <= 0 or ball.bottom >= screenWidthY:
-        ballSpeedY *= -1
+class Game:
+    # Creating game objects : Three object --------------------------------------#
+    def __init__(self):
+        self.player = Player(displayWidth - 22, 0, 0)
+        self.opponent = Player(8, 0, 0)
+        self.ball = Ball(random.randint(-6, 6), random.randint(-4, 4))
 
-    if ball.left <= 0:
-        playerScore += 1
-        resetBall()
+    def collisions(self):
+        self.ball.mouvement()
+        self.lunch()
+        # Ball collisions with borders -------------------------------------------#
+        if self.ball.rect.top <= 0 or self.ball.rect.bottom >= displayHeight:
+            self.ball.speedY *= -1
 
-    elif ball.right >= screenWidthX:
-        opponentScore += 1
-        resetBall()
+        if self.ball.rect.left <= 0:
+            self.player.score += 1
+            self.ball.reset()
 
-    # ball collision with objects
-    if ball.colliderect(player) and ballSpeedX > 0:
-        ballSpeedX *= -1.05
-        if abs(ball.bottom - player.top) < 5 and ballSpeedY > 0:
-            ballSpeedY *= -1.05
-        elif abs(ball.top - player.bottom) < 5 and ballSpeedY < 0:
-            ballSpeedY *= -1.05
+        elif self.ball.rect.right >= displayWidth:
+            self.opponent.score += 1
+            self.ball.reset()
 
-    if ball.colliderect(opponent) and ballSpeedX < 0:
-        ballSpeedX *= -1.05
-        if abs(ball.bottom - opponent.top) < 5 and ballSpeedY > 0:
-            ballSpeedY *= -1.05
-        elif abs(ball.top - opponent.bottom) < 5 and ballSpeedY < 0:
-            ballSpeedY *= -1.05
+         # Ball collisions with borders -------------------------------------------#
+        if self.ball.rect.colliderect(self.player.rect) and self.ball.speedX > 0:
+            self.ball.speedX *= -1.05
+            if abs(self.ball.rect.bottom - self.player.rect.top) < 5 and self.ball.speedY > 0:
+                self.ball.speedY *= -1.05
+            elif abs(self.ball.rect.top - self.player.rect.bottom) < 5 and self.ball.speedY < 0:
+                self.ball.speedY *= -1.05
 
-def playerAnimation():
-    player.y += playerSpeed
-    if player.top <= 0: 
-        player.top = 0
-    if player.bottom >= screenWidthY:
-        player.bottom = screenWidthY
+        if self.ball.rect.colliderect(self.opponent.rect) and self.ball.speedX < 0:
+            self.ball.speedX *= -1.05
+            if abs(self.ball.rect.bottom - self.opponent.rect.top) < 5 and self.ball.speedY > 0:
+                self.ball.speedY *= -1.05
+            elif abs(self.ball.rect.top - self.opponent.rect.bottom) < 5 and self.ball.speedY < 0:
+                self.ball.speedY *= -1.05
 
-def opponentAnimation():
-    opponent.y += opponentSpeed
-    if opponent.top <= 0: 
-        opponent.top = 0
-    if opponent .bottom >= screenWidthY:
-        opponent.bottom = screenWidthY
+    def constraints(self):
+        self.player.collisions()
+        self.opponent.collisions()
+        self.collisions()
 
-def resetBall():
-    global ballSpeedX, ballSpeedY
-    ballSpeedX, ballSpeedY = 0, 0
-    ball.center = (screenWidthX/2, screenWidthY/2)
+    def score(self):
+        playerScore = mainFont.render(f"{self.player.score}", False, objectColor)
+        opponentScore = mainFont.render(f"{self.opponent.score}", False, objectColor)
+        display.blit(playerScore, (displayWidth/2 + 25, 10))
+        display.blit(opponentScore, (displayWidth/2 - 35, 10))
 
-# game title and logo
-pygame.display.set_caption("Ping Pong")
+    def draw(self):
+        display.fill(backgroundColor)
+        pygame.draw.line(display, objectColor, (int(displayWidth/2), 0), (int(displayWidth/2), displayHeight), 5)
+        self.player.draw()
+        self.opponent.draw()
+        self.ball.draw()
+        self.score()
 
-# screen dimensions
-screenWidthX = 700
-screenWidthY = 400
-screen = pygame.display.set_mode((screenWidthX, screenWidthY))
+    def lunch(self):
+        if (self.player.speed != 0 or self.opponent.speed != 0) and (self.ball.speedX == 0 and self.ball.speedY == 0):
+            self.ball.speedX = random.randint(2, 5) 
+            self.ball.speedY = random.randint(1, 4)
 
-# color palette
-backgroundColor = (0, 190, 105)
-objectColor = (250, 250, 250) 
+    def run(self):
+        self.constraints()
+        self.draw()
 
-# game objects
-# the rect pos (x, y) is defined by top-left corner coords (x, y)
-ball = pygame.Rect(screenWidthX/2 - 7, screenWidthY/2 - 7, 14, 14)
-player = pygame.Rect(screenWidthX - 20, screenWidthY/2 - 40, 14, 80)
-opponent = pygame.Rect(8, screenWidthY/2 - 40, 14, 80)
+# Naming the game
+pygame.display.set_caption("Pong Game")
 
-# the main game loop
+# creating the game
+game = Game()
+
+# Pong game Main loop
 while True:
-    # pygame display events 
+    # pygame display controle events ------------------------------------------# 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
-                playerSpeed += 5
+                game.player.speed += 5
             if event.key == pygame.K_UP:
-                playerSpeed -= 5 
+                game.player.speed -= 5 
             if event.key == pygame.K_a:
-                opponentSpeed += 5
+                game.opponent.speed += 5
             if event.key == pygame.K_q:
-                opponentSpeed -= 5
+                game.opponent.speed -= 5
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
-                playerSpeed -= 5
+                game.player.speed -= 5
             if event.key == pygame.K_UP:
-                playerSpeed += 5
+                game.player.speed += 5
             if event.key == pygame.K_a:
-                opponentSpeed -= 5
+                game.opponent.speed -= 5
             if event.key == pygame.K_q:
-                opponentSpeed += 5
-  
-    ballAnimate()
-    playerAnimation()
-    opponentAnimation()
-    
-    #drawing 
-    screen.fill(backgroundColor)
-    pygame.draw.rect(screen, objectColor, player)
-    pygame.draw.rect(screen, objectColor, opponent)
-    pygame.draw.rect(screen, objectColor, ball)
-    pygame.draw.line(screen, objectColor, (screenWidthX/2, 0), (screenWidthX/2, screenWidthY), 5)
-
-    playerText = gameFont.render(f"{playerScore}", False, objectColor)
-    opponentText = gameFont.render(f"{opponentScore}", False, objectColor)
-    screen.blit(playerText, (screenWidthX/2 + 25, 10))
-    screen.blit(opponentText, (screenWidthX/2 - 35, 10))
-
-    #waiting to lunch the ball
-    if (playerSpeed != 0 or opponentSpeed != 0) and (ballSpeedX == 0 and ballSpeedY == 0):
-            ballSpeedX = rand(2, 5) 
-            ballSpeedY = rand(1, 4)
+                game.opponent.speed += 5
 
     # updating the display window
-    clock.tick(60)
+    game.run()
+    frameRates.tick(60)
     pygame.display.flip()

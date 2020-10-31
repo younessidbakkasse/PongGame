@@ -1,6 +1,7 @@
 # Modules 
 import pygame, sys, random
 from pygame.math import Vector2
+from main import * 
 
 class Snake:
     def __init__(self):
@@ -11,7 +12,7 @@ class Snake:
     def draw(self):
         for part in self.snakeBody:
             bodyRect = pygame.Rect(int(part.x * cellWidth), int(part.y * cellWidth), cellWidth, cellWidth)
-            pygame.draw.rect(displaySurface, objectColor, bodyRect)
+            pygame.draw.rect(display, objectColor, bodyRect)
 
     def move(self):
         if self.newBodyPart == True:
@@ -37,7 +38,7 @@ class Food:
 
     def draw(self):
         foodRect = pygame.Rect(int(self.pos.x * cellWidth), int(self.pos.y * cellWidth), cellWidth, cellWidth)
-        pygame.draw.rect(displaySurface, foodColor, foodRect)
+        pygame.draw.rect(display, foodColor, foodRect)
 
     def randomize(self):
         self.x = random.randint(0, cellNumber - 1)
@@ -85,33 +86,13 @@ class Game:
     def score(self):
         score = str(len(self.snake.snakeBody) - 3)
         scoreSurface = mainFont.render(score, False, objectColor)
-        scoreSurfaceRect = scoreSurface.get_rect(center = (int(cellWidth/2), int(cellWidth/2)))
-        displaySurface.blit(scoreSurface, scoreSurfaceRect)
+        scoreSurfaceRect = scoreSurface.get_rect(center = (int(cellWidth/2 + 5), int(cellWidth/2 + 5)))
+        display.blit(scoreSurface, scoreSurfaceRect)
 
     def drawBackground(self):
-        displaySurface.fill(backgroundColor)
+        display.fill(backgroundColor)
 
-# Initialising pygame modules
-pygame.init()
-frameRates = pygame.time.Clock()
-
-# Global variables 
-# The display is a grid with 10px cell size
-cellWidth = 20
-cellNumber = 30
-displayWidth = cellNumber * cellWidth
-displayHeight = cellNumber * cellWidth
-
-# Color Palette
-objectColor = (245, 245, 245)
-backgroundColor = (0, 190, 105)
-foodColor = (200, 30, 30)
-
-# Game font
-mainFont = pygame.font.Font("./assets/MinecraftTen-VGORe.ttf", 21)
-
-# Creating the display object
-displaySurface = pygame.display.set_mode((displayWidth, displayHeight))
+# Naming the game
 pygame.display.set_caption("Snake Game")
 
 # Time event
@@ -121,7 +102,7 @@ pygame.time.set_timer(timeEvent, 100)
 # Declaring game
 game = Game()
 
-# Main game loop
+# Snake game loop
 while True:
     # Game control and user input
     for event in pygame.event.get():
