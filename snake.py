@@ -42,7 +42,7 @@ class Food:
 
     def randomize(self):
         self.x = random.randint(0, cellNumber - 1)
-        self.y = random.randint(0, cellNumber - 1)
+        self.y = random.randint(0, cellNumber - 11)
         self.pos = pygame.Vector2(self.x, self.y)
 
 class Game:
@@ -72,7 +72,7 @@ class Game:
         self.score()
 
     def isOutside(self):
-        if not 0 <= self.snake.snakeBody[0].x < cellNumber or not 0 <= self.snake.snakeBody[0].y < cellNumber: 
+        if not 0 <= self.snake.snakeBody[0].x < cellNumber or not 0 <= self.snake.snakeBody[0].y < cellNumber - 10: 
             self.gameOver()
     
     def isEatenSelf(self):
